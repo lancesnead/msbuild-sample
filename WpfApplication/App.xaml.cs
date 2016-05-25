@@ -13,5 +13,12 @@ namespace WpfApplication
     /// </summary>
     public partial class App : Application
     {
+        //time to demo some C# 6 features
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            var name = $"{this.MainWindow.Name} - WpfApplication";
+            var title = this.MainWindow?.Title;
+        }
     }
 }
