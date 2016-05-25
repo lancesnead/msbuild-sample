@@ -32,10 +32,18 @@ namespace ConsoleApplication
             };
             var targets = new List<string> {"PrepareForBuild", "Clean", "Build", "Publish"};
             var reqData = new BuildRequestData(GetProjectPath(), props, "14.0", targets.ToArray(), null);
-            Log("Starting MSBuild build");
-            BuildManager.DefaultBuildManager.BeginBuild(buildParams);
-            var buildResult = BuildManager.DefaultBuildManager.BuildRequest(reqData);
-            Log($"MSBuild build complete: {buildResult.OverallResult}");
+            try
+            {
+                Log("Starting MSBuild build");
+                BuildManager.DefaultBuildManager.BeginBuild(buildParams);
+                var buildResult = BuildManager.DefaultBuildManager.BuildRequest(reqData);
+                Log($"MSBuild build complete: {buildResult.OverallResult}");
+            }
+            catch (InvalidCastException ex)
+            {
+                Log(ex.Message);
+                throw;
+            }
         }
 
         private static string GetProjectPath()
