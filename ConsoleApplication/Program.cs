@@ -5,16 +5,28 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Build.BuildEngine;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
+using Microsoft.Build.Locator;
+using Microsoft.Build.Logging;
 
 namespace ConsoleApplication
 {
     class Program
     {
         static void Main(string[] args)
+        {
+            //Add a reference to the Microsoft.Build.Locator package, and register the default Visual Studio MSBuild.
+            MSBuildLocator.RegisterDefaults();
+
+            BuildProject();
+
+            Console.ReadLine();
+        }
+
+        private static void BuildProject()
         {
             var pc = new ProjectCollection();
             var path = Directory.CreateDirectory(Path.GetTempPath() + Guid.NewGuid().ToString("N") + "\\");
@@ -28,10 +40,11 @@ namespace ConsoleApplication
             {
                 DetailedSummary = true,
                 Loggers = new List<ILogger> {new ConsoleLogger()},
-                DefaultToolsVersion = "14.0"
+                DefaultToolsVersion = "15.0",
+                
             };
             var targets = new List<string> {"PrepareForBuild", "Clean", "Build", "Publish"};
-            var reqData = new BuildRequestData(GetProjectPath(), props, "14.0", targets.ToArray(), null);
+            var reqData = new BuildRequestData(GetProjectPath(), props, "15.0", targets.ToArray(), null);
             try
             {
                 Log("Starting MSBuild build");
@@ -45,7 +58,7 @@ namespace ConsoleApplication
                 throw;
             }
         }
-
+       
         private static string GetProjectPath()
         {
             var segments = Environment.CurrentDirectory.Split('\\').TakeWhile(s => s != "ConsoleApplication").ToList();

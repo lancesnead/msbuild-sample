@@ -1,2 +1,2 @@
 # msbuild-sample
-Demonstrating MSBuild v14 with WPF
+Demonstrating MSBuild v15 with WPF
